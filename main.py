@@ -21,6 +21,11 @@ verifier = SignatureVerifier(SLACK_SIGNING_SECRET)
 @app.route("/", methods=["POST"])
 def slack_events():
     """Endpoint for Slack event subscriptions."""
+    # First, handle the URL verification challenge
+    if request.json and "challenge" in request.json:
+        return jsonify({"challenge": request.json["challenge"]})
+
+    # Verify the request signature to ensure it's from Slack
     if not verifier.is_valid(
         body=request.get_data(),
         timestamp=request.headers.get("X-Slack-Request-Timestamp"),
@@ -28,11 +33,8 @@ def slack_events():
     ):
         return "Invalid request signature", 403
 
+    # Parse the request payload and handle the event
     data = request.json
-    
-    if "challenge" in data:
-        return jsonify({"challenge": data["challenge"]})
-    
     if "event" in data and data["event"]["type"] == "app_mention":
         text = data["event"]["text"]
         channel_id = data["event"]["channel"]
@@ -67,4 +69,4 @@ def post_to_slack(channel, text, thread_ts):
     requests.post("https://slack.com/api/chat.postMessage", json=payload, headers=headers)
 
 if __name__ == "__main__":
-    app.run(debug=True, host="0.0.0.0", port=int(os.environ.get("PORT", 8080)))
+    app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 8080)))
