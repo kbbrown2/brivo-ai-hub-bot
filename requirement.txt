@@ -1,5 +1,0 @@
-Flask
-slack_sdk
-google-cloud-aiplatform
-requests
-gunicorn
