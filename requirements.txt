@@ -3,3 +3,4 @@ requests>=2.31.0
 google-cloud-aiplatform>=1.49.0
 gunicorn>=23.0.0
 slack_sdk>=3.25.0
+# Forced rebuild 
