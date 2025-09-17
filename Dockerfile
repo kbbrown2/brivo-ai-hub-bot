@@ -1,23 +1,18 @@
-# Use a separate stage for building the dependencies
-FROM python:3.9-slim as builder
+# Use the official Python image as a base
+FROM python:3.9-slim
 
-# Set the working directory
+# Set the working directory in the container
 WORKDIR /app
 
-# Copy and install dependencies without cache
+# Copy the requirements file and install dependencies
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Use a lean base image for the final runtime
-FROM python:3.9-slim
+# Copy the application code
+COPY . .
 
-# Copy only the installed packages and code from the builder stage
-COPY --from=builder /usr/local/lib/python3.9/site-packages /usr/local/lib/python3.9/site-packages
-COPY --from=builder /app /app
-
-# Set the working directory and expose the port
-WORKDIR /app
+# Expose the port
 EXPOSE 8080
 
 # Run the application using Gunicorn
-CMD ["gunicorn", "--bind", "0.0.0.0:8080", "main:app"]
+CMD ["gunicorn", "--bind", ":8080", "main:app"]
