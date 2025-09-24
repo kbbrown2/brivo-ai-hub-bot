@@ -1,4 +1,4 @@
-# Use the official Python image as a base
+# Use a Python base image for the final runtime
 FROM python:3.9-slim
 
 # Set the working directory in the container
@@ -15,4 +15,4 @@ COPY . .
 EXPOSE 8080
 
 # Run the application using Gunicorn
-CMD ["gunicorn", "--bind", ":8080", "main:app"]
+CMD ["gunicorn", "--bind", "0.0.0.0:8080", "main:app"]
