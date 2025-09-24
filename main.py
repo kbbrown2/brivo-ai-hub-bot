@@ -50,7 +50,7 @@ def slack_events():
 
     return "OK", 200
 
-def generate_response_from_vertex_ai(prompt):
+def generate_response_from_vertex_ai(prompt):api
     """Calls the Vertex AI API to get a generated response."""
     response = model.generate_content(prompt)
     return response.text
